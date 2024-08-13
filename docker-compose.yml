@@ -1,0 +1,91 @@
+services:
+  email_actuator:
+    image: valawai/c0_email_actuator:${C0_EMAIL_ACTUATOR_TAG:-latest}
+    container_name: c0_email_actuator
+    networks:  
+      - email_actuator
+    depends_on:
+      mov:
+        condition: service_started
+        required: false
+      mail:
+        condition: service_started
+        required: false
+    environment:
+      RABBITMQ_HOST: ${MQ_HOST:-mq}
+      RABBITMQ_PORT: ${MQ_PORT:-5672}
+      RABBITMQ_USERNAME: ${MQ_USER:-mov}
+      RABBITMQ_PASSWORD: ${MQ_PASSWORD:-password}
+      MAIL_PROTOCOL: ${MAIL_PROTOCOL:-imaps}
+      MAIL_HOST: ${MAIL_HOST:-mail}
+      MAIL_PORT: ${MAIL_PORT:-993}
+      MAIL_USERNAME: ${MAIL_USERNAME:-user}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-password}
+
+  mail:
+    image: schickling/mailcatcher:${MAIL_CATCHER_TAG:-latest}
+    container_name: email_actuator_mail
+    profiles: [mail]
+    hostname: ${MAIL_HOST:-mail}
+    ports:
+      - "${MAIL_LOCAL_SMTP:-1025}:25"
+      - "${MAIL_LOCAL_WEB:-1080}:80"
+    networks:
+      - email_actuator
+
+  mq:
+    image: rabbitmq:${RABBITMQ_TAG:-management}
+    container_name: mov_mq
+    profiles: [mov]
+    hostname: ${MQ_HOST:-mq}
+    ports:
+      - ${MQ_LOCAL_PORT:-5672}:5672
+      - ${MQ_LOCAL_UI_PORT:-8081}:15672
+    networks:
+      - email_actuator
+    environment:
+      RABBITMQ_DEFAULT_USER: ${MQ_USER:-mov}
+      RABBITMQ_DEFAULT_PASS: ${MQ_PASSWORD:-password}
+
+  mongo:
+    image: mongo:${MONGODB_TAG:-latest}
+    container_name: mov_db
+    profiles: [mov]
+    hostname: ${DB_HOST:-mongo}
+    ports:
+      - ${MONGO_LOCAL_PORT:-27017}:27017
+    networks:
+      - email_actuator
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
+      MONGO_INITDB_DATABASE: ${DB_NAME:-movDB}
+      DB_NAME: ${DB_NAME:-movDB}
+      DB_USER_NAME: ${DB_USER_NAME:-mov}
+      DB_USER_PASSWORD: ${DB_USER_PASSWORD:-password}
+    volumes:
+      - ./src/deploy/docker/initialize-movDB.js:/docker-entrypoint-initdb.d/init-mongo.js
+      - ${MONGO_LOCAL_DATA:-~/mongo_data/emailActuatorMovDB}:/data/db
+  mov:
+    image: valawai/mov:${MOV_TAG:-latest}
+    container_name: mov
+    profiles: [mov]
+    depends_on:
+      - mongo
+      - mq
+    ports:
+      - ${MOV_UI_PORT:-8080}:8080
+    networks:  
+      - email_actuator
+    environment:
+      RABBITMQ_HOST: ${MQ_HOST:-mq}
+      RABBITMQ_PORT: ${MQ_PORT:-5672}
+      RABBITMQ_USERNAME: ${MQ_USER:-mov}
+      RABBITMQ_PASSWORD: ${MQ_PASSWORD:-password}
+      QUARKUS_MONGODB_DATABASE: ${DB_NAME:-movDB}
+      QUARKUS_MONGODB_CREDENTIALS_USERNAME: ${DB_USER_NAME:-mov}
+      QUARKUS_MONGODB_CREDENTIALS_PASSWORD: ${DB_USER_PASSWORD:-password}
+      QUARKUS_MONGODB_HOSTS: ${DB_HOST:-mongo}:${MONGO_PORT:-27017}
+
+networks:
+  email_actuator:
