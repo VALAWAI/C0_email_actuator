@@ -74,7 +74,7 @@ public class EMailActuator {
 					final var encoded = address.encode();
 					switch (address.type) {
 
-					case TO -> mail.addTo(encoded);
+					default -> mail.addTo(encoded);
 					case BCC -> mail.addBcc(encoded);
 					case CC -> mail.addCc(encoded);
 					}

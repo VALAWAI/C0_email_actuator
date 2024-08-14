@@ -14,7 +14,7 @@ or on the [component documentation](https://valawai.github.io/docs/components/C0
 
  - Type: C0
  - Name: E-mail actuator
- - API: [1.0.0 (August 13, 2024)](https://raw.githubusercontent.com/VALAWAI/C0_email_actuator/ASYNCAPI_1.0.0/asyncapi.yml)
+ - API: [1.0.0 (August 14, 2024)](https://raw.githubusercontent.com/VALAWAI/C0_email_actuator/ASYNCAPI_1.0.0/asyncapi.yml)
  - VALAWAI API: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
  - Developed By: [IIIA-CSIC](https://www.iiia.csic.es)
  - License: [GPL 3](LICENSE)

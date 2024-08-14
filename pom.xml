@@ -8,16 +8,16 @@
 	<version>1.0.0</version>
 	<properties>
 		<compiler-plugin.version>3.13.0</compiler-plugin.version>
-		<jacoco.version>0.8.12</jacoco.version>
 		<maven.compiler.release>21</maven.compiler.release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
 		<quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
 		<quarkus.platform.version>3.13.2</quarkus.platform.version>
-		<resources-plugin.version>3.3.1</resources-plugin.version>
 		<skipITs>true</skipITs>
 		<surefire-plugin.version>3.2.5</surefire-plugin.version>
+		<jacoco.version>0.8.12</jacoco.version>
+		<resources-plugin.version>3.3.1</resources-plugin.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -74,6 +74,11 @@
 			<artifactId>rest-assured</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-jacoco</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -123,6 +128,7 @@
 				<configuration>
 					<compilerArgs>
 						<arg>-parameters</arg>
+						<arg>-proc:full</arg>
 					</compilerArgs>
 				</configuration>
 			</plugin>
@@ -130,9 +136,11 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${surefire-plugin.version}</version>
 				<configuration>
+					<argLine>@{argLine} -XX:+EnableDynamicAgentLoading</argLine>
 					<systemPropertyVariables>
 						<java.util.logging.manager>
-							org.jboss.logmanager.LogManager</java.util.logging.manager>
+							org.jboss.logmanager.LogManager
+						</java.util.logging.manager>
 						<maven.home>${maven.home}</maven.home>
 					</systemPropertyVariables>
 				</configuration>
@@ -151,10 +159,13 @@
 				<configuration>
 					<systemPropertyVariables>
 						<native.image.path>
-							${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+							${project.build.directory}/${project.build.finalName}-runner
+						</native.image.path>
 						<java.util.logging.manager>
-							org.jboss.logmanager.LogManager</java.util.logging.manager>
+							org.jboss.logmanager.LogManager
+						</java.util.logging.manager>
 						<maven.home>${maven.home}</maven.home>
+						<quarkus.test.arg-line>${argLine}</quarkus.test.arg-line>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
@@ -164,8 +175,9 @@
 				<version>${jacoco.version}</version>
 				<executions>
 					<execution>
-						<id>default-prepare-agent</id>
+						<id>default-prepare-agent-integration</id>
 						<goals>
+							<goal>prepare-agent-integration</goal>
 							<goal>prepare-agent</goal>
 						</goals>
 						<configuration>
@@ -173,6 +185,19 @@
 							<destFile>
 								${project.build.directory}/jacoco-quarkus.exec</destFile>
 							<append>true</append>
+						</configuration>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>
+								${project.build.directory}/jacoco-quarkus.exec</dataFile>
+							<outputDirectory>
+								${project.build.directory}/jacoco-report</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
