@@ -2,7 +2,7 @@
 
 The C0 e-mail actuator component sends e-mails outside the VALAWAI infrastructure.
 Thus, this component converts the messages  received into the channel
-**valawai/c0/email_actuator/data/e_mail** to e-mials that send to a server.
+**valawai/c0/email_actuator/data/e_mail** to e-mails that send to a server.
 You can read more about this service and the payload of the message on
 the [aysncapi](asyncapi.yaml) or on the [component documentation](https://valawai.github.io/docs/components/C0/email_actuator).
 
