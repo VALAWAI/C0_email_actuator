@@ -3,7 +3,7 @@ services:
     image: valawai/c0_email_actuator:${C0_EMAIL_ACTUATOR_TAG:-latest}
     container_name: c0_email_actuator
     networks:  
-      - email_actuator
+      - email_actuator_net
     depends_on:
       mov:
         condition: service_started
@@ -16,11 +16,14 @@ services:
       RABBITMQ_PORT: ${MQ_PORT:-5672}
       RABBITMQ_USERNAME: ${MQ_USER:-mov}
       RABBITMQ_PASSWORD: ${MQ_PASSWORD:-password}
-      MAIL_PROTOCOL: ${MAIL_PROTOCOL:-imaps}
-      MAIL_HOST: ${MAIL_HOST:-mail}
-      MAIL_PORT: ${MAIL_PORT:-993}
-      MAIL_USERNAME: ${MAIL_USERNAME:-user}
-      MAIL_PASSWORD: ${MAIL_PASSWORD:-password}
+      QUARKUS_MAILER_HOST: ${MAIL_HOST:-mail}
+      QUARKUS_MAILER_PORT: ${MAIL_PORT:-25}
+      QUARKUS_MAILER_FROM: ${MAIL_FROM:-no-reply@valawai.eu}
+      QUARKUS_MAILER_USERNAME: ${MAIL_USERNAME:-user}
+      QUARKUS_MAILER_PASSWORD: ${MAIL_PASSWORD:-password}
+      QUARKUS_MAILER_START_TLS: ${MAIL_STARTTLS:-DISABLED}
+      QUARKUS_MAILER_TLS: ${MAIL_STARTTLS:-false}
+      QUARKUS_MAILER_AUTH_METHODS: ${MAIL_AUTH_METHODS:-DIGEST-MD5 CRAM-SHA256 CRAM-SHA1 CRAM-MD5 PLAIN LOGIN}
 
   mail:
     image: schickling/mailcatcher:${MAIL_CATCHER_TAG:-latest}
@@ -29,9 +32,9 @@ services:
     hostname: ${MAIL_HOST:-mail}
     ports:
       - "${MAIL_LOCAL_SMTP:-1025}:25"
-      - "${MAIL_LOCAL_WEB:-1080}:80"
+      - "${MAIL_LOCAL_WEB:-8082}:80"
     networks:
-      - email_actuator
+      - email_actuator_net
 
   mq:
     image: rabbitmq:${RABBITMQ_TAG:-management}
@@ -42,7 +45,7 @@ services:
       - ${MQ_LOCAL_PORT:-5672}:5672
       - ${MQ_LOCAL_UI_PORT:-8081}:15672
     networks:
-      - email_actuator
+      - email_actuator_net
     environment:
       RABBITMQ_DEFAULT_USER: ${MQ_USER:-mov}
       RABBITMQ_DEFAULT_PASS: ${MQ_PASSWORD:-password}
@@ -55,7 +58,7 @@ services:
     ports:
       - ${MONGO_LOCAL_PORT:-27017}:27017
     networks:
-      - email_actuator
+      - email_actuator_net
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
@@ -76,7 +79,7 @@ services:
     ports:
       - ${MOV_UI_PORT:-8080}:8080
     networks:  
-      - email_actuator
+      - email_actuator_net
     environment:
       RABBITMQ_HOST: ${MQ_HOST:-mq}
       RABBITMQ_PORT: ${MQ_PORT:-5672}
@@ -88,4 +91,4 @@ services:
       QUARKUS_MONGODB_HOSTS: ${DB_HOST:-mongo}:${MONGO_PORT:-27017}
 
 networks:
-  email_actuator:
+  email_actuator_net:

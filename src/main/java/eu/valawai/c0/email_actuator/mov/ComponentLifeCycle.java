@@ -16,7 +16,9 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import io.quarkus.logging.Log;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
+import io.smallrye.config.Priorities;
 import io.vertx.core.json.JsonObject;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
@@ -62,7 +64,7 @@ public class ComponentLifeCycle {
 	 *
 	 * @param event that contains the start status.
 	 */
-	public void handle(@Observes StartupEvent event) {
+	public void handle(@Observes @Priority(Priorities.APPLICATION) StartupEvent event) {
 
 		final var payload = new RegisterComponentPayload();
 		payload.version = this.version;
