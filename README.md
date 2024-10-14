@@ -11,6 +11,7 @@ the [aysncapi](asyncapi.yaml) or on the [component documentation](https://valawa
 
  - Type: C0
  - Name: E-mail actuator
+ - Version: 1.1.0 (October 14,2024)
  - API: [1.0.0 (August 16, 2024)](https://raw.githubusercontent.com/VALAWAI/C0_email_actuator/ASYNCAPI_1.0.0/asyncapi.yml)
  - VALAWAI API: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
  - Developed By: [IIIA-CSIC](https://www.iiia.csic.es)
@@ -211,17 +212,16 @@ Alternatively, to run the test using the started Quarkus client, you can use Mav
 Also, this starts the tools:
 
  * **RabbitMQ**  the server to manage the messages to interchange with the components.
- The management web interface can be opened at **http://localhost:8081** with the credential
+ The management web interface can be opened at [http://localhost:8081](http://localhost:8081) with the credential
  **mov**:**password**.
  * **MongoDB**  the database to store the data used by the MOV. The database is named as **movDB** and the user credentials **mov:password**.
- The management web interface can be opened at **http://localhost:8081** with the credential
- **mov**:**password**.
  * **Mongo express**  the web interface to interact with the MongoDB. The web interface
-  can be opened at **http://localhost:8082**.
+  can be opened at [http://localhost:8082](http://localhost:8082) with the credential
+ **mov**:**password**.
  * **Mail catcher**  the component that capture the sent mails.
-  The web interface can be opened at **http://localhost:8083**.
+  The web interface can be opened at [http://localhost:8083](http://localhost:8083).
  * **Master of VALAWAI**  the component that mantains the topology connections between components.
-  The web interface can be opened at **http://localhost:8084**.
+  The web interface can be opened at [http://localhost:8084](http://localhost:8084).
 
 
 ## Links

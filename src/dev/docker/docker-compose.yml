@@ -11,6 +11,15 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${MQ_USER:-mov}
       RABBITMQ_DEFAULT_PASS: ${MQ_PASSWORD:-password}
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+      start_interval: 5s
+
+
   mongo:
     image: mongo:${MONGO_TAG:-latest}
     container_name: mov_db_dev
@@ -26,12 +35,23 @@ services:
     volumes:
       - ./initialize-movDB.js:/docker-entrypoint-initdb.d/init-mongo.js
       - ${MONGO_LOCAL_DATA:-~/mongo_data/movDB}:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet localhost/${DB_NAME:-movDB} --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"]
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+      start_interval: 5s  
+
+
   mongo_express:
     image: mongo-express:${MONGO_EXPRESS_TAG:-latest}
     container_name: mov_db_ui_dev
     restart: unless-stopped
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
+        restart: true
     ports:
       - ${MONGO_ADMIN_PORT:-8082}:8081
     networks:  
@@ -43,22 +63,28 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD:-password}
       ME_CONFIG_MONGODB_PORT: ${MONGO_PORT:-27017}
       ME_CONFIG_MONGODB_SERVER: mongo
+
   mail:
     image: schickling/mailcatcher:${MAIL_CATCHER_TAG:-latest}
     container_name: eduteams_mail_dev
     restart: unless-stopped
     ports:
       - "${MAIL_PORT:-1025}:1025"
-      - "${MAIL_WEB:-1080}:8083"
+      - "${MAIL_WEB:-8083}:1080"
     networks:
       - c0_email_actuator_dev
+
   mov:
     image: valawai/mov:${MOV_TAG:-latest}
-    container_name: mov_dev
+    container_name: mov_ui_dev
     restart: unless-stopped
     depends_on:
-      - mongo
-      - mq
+      mongo:
+        condition: service_healthy
+        restart: true
+      mq:
+        condition: service_healthy
+        restart: true
     ports:
       - ${MOV_UI_PORT:-8084}:8080
     networks:  
@@ -72,7 +98,15 @@ services:
       QUARKUS_MONGODB_CREDENTIALS_USERNAME: ${DB_USER_NAME:-mov}
       QUARKUS_MONGODB_CREDENTIALS_PASSWORD: ${DB_USER_PASSWORD:-password}
       QUARKUS_MONGODB_HOSTS: mongo:${MONGO_PORT:-27017}
-      MOV_URL: http://localhost:${MOV_UI_PORT:-8083}
+      MOV_URL: http://localhost:${MOV_UI_PORT:-8084}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:8080/q/health | grep -m 1 -P \"^[\\s|\\{|\\\"]+status[\\s|\\:|\\\"]+.+\\\"\" |grep -q \"\\\"UP\\\"\""]
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+      start_interval: 5s  
+
 
 networks:
   c0_email_actuator_dev:

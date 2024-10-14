@@ -41,6 +41,11 @@ public class MOVTestResource implements QuarkusTestResourceLifecycleManager {
 	public static final String MOV_DOCKER_NAME = "valawai/mov:latest";
 
 	/**
+	 * The name of the property where the Master Of VALAWAI is listening.
+	 */
+	public static final String MOV_URL_CONFIG_PROPERTY_NAME = "mov.port";
+
+	/**
 	 * The mongo service container.
 	 */
 	static GenericContainer<?> mongoContainer = new GenericContainer<>(DockerImageName.parse(MONGO_DOCKER_NAME))
@@ -77,19 +82,14 @@ public class MOVTestResource implements QuarkusTestResourceLifecycleManager {
 
 		if (Boolean.parseBoolean(System.getProperty("useDevMOV"))) {
 
-			config.put("quarkus.mongodb.connection-string", "mongodb://mov:password@host.docker.internal:27017/movDB");
 			config.put("rabbitmq-host", "host.docker.internal");
-			config.put("quarkus.http.host", "host.docker.internal");
-			config.put("quarkus.http.port", "8084");
-			config.put("quarkus.http.test-host", "host.docker.internal");
-			config.put("quarkus.http.test-port", "8084");
+			config.put(MOV_URL_CONFIG_PROPERTY_NAME, "http://host.docker.internal:8084");
 
 		} else {
 
 			mongoContainer.start();
 			final var mongoConnection = "mongodb://mov:password@" + mongoContainer.getHost() + ":"
 					+ mongoContainer.getMappedPort(27017) + "/movDB";
-			config.put("quarkus.mongodb.connection-string", mongoConnection);
 
 			rabbitMQContainer.start();
 			final var rabbitMQHost = rabbitMQContainer.getHost();
@@ -102,10 +102,8 @@ public class MOVTestResource implements QuarkusTestResourceLifecycleManager {
 					.withEnv("quarkus.mongodb.connection-string", mongoConnection).withExposedPorts(8080)
 					.waitingFor(Wait.forListeningPort());
 			movContainer.start();
-			config.put("quarkus.http.test-host", movContainer.getHost());
-			config.put("quarkus.http.test-port", String.valueOf(movContainer.getMappedPort(8080)));
-			config.put("quarkus.http.host", movContainer.getHost());
-			config.put("quarkus.http.port", String.valueOf(movContainer.getMappedPort(8080)));
+			config.put(MOV_URL_CONFIG_PROPERTY_NAME,
+					"http://" + movContainer.getHost() + ":" + movContainer.getMappedPort(8080));
 
 		}
 

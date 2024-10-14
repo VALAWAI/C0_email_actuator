@@ -1,9 +1,9 @@
 /*
-  Copyright 2024 UDT-IA, IIIA-CSIC
+  Copyright 2022-2026 VALAWAI
 
-  Use of this source code is governed by an MIT-style
+  Use of this source code is governed by GNU General Public License version 3
   license that can be found in the LICENSE file or at
-  https://opensource.org/licenses/MIT.
+  https://opensource.org/license/gpl-3-0/
 */
 
 package eu.valawai.c0.email_actuator.mov;
@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.time.Duration;
 import java.util.UUID;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
 
 import eu.valawai.c0.email_actuator.EMailPayloadTest;
@@ -39,6 +40,12 @@ public class LogServiceTest {
 	 */
 	@Inject
 	LogService service;
+
+	/**
+	 * The port where teh Master Of VALAWAI is listening.
+	 */
+	@ConfigProperty(name = MOVTestResource.MOV_URL_CONFIG_PROPERTY_NAME, defaultValue = "http://host.docker.internal:8084")
+	String movUrl;
 
 	/**
 	 * Test debug message.
@@ -162,7 +169,7 @@ public class LogServiceTest {
 		while (System.currentTimeMillis() < deadline) {
 
 			final var content = given().queryParam("order", "-timestamp").queryParam("limit", "50").when()
-					.get("/v1/logs").then().statusCode(200).extract().asString();
+					.get(this.movUrl + "/v1/logs").then().statusCode(200).extract().asString();
 			final var page = Json.decodeValue(content, JsonObject.class);
 			final var logs = page.getJsonArray("logs");
 			if (logs != null) {
