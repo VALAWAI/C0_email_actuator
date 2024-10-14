@@ -24,6 +24,13 @@ services:
       QUARKUS_MAILER_START_TLS: ${MAIL_STARTTLS:-DISABLED}
       QUARKUS_MAILER_TLS: ${MAIL_STARTTLS:-false}
       QUARKUS_MAILER_AUTH_METHODS: ${MAIL_AUTH_METHODS:-DIGEST-MD5 CRAM-SHA256 CRAM-SHA1 CRAM-MD5 PLAIN LOGIN}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:8080/q/health | grep -m 1 -P \"^[\\s|\\{|\\\"]+status[\\s|\\:|\\\"]+.+\\\"\" |grep -q \"\\\"UP\\\"\""]
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+      start_interval: 5s
 
   mail:
     image: schickling/mailcatcher:${MAIL_CATCHER_TAG:-latest}

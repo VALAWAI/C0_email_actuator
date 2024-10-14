@@ -43,7 +43,7 @@ public class MOVTestResource implements QuarkusTestResourceLifecycleManager {
 	/**
 	 * The name of the property where the Master Of VALAWAI is listening.
 	 */
-	public static final String MOV_URL_CONFIG_PROPERTY_NAME = "mov.port";
+	public static final String MOV_URL_CONFIG_PROPERTY_NAME = "mov.url";
 
 	/**
 	 * The mongo service container.
