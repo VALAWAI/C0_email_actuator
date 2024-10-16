@@ -1,6 +1,11 @@
 # C0_email_actuator
 
 
+## Version 1.1.1 (October 16, 2024)
+
+ - Improve documentation
+
+
 ## Version 1.1.0 (October 14, 2024)
 
  - Add health check
