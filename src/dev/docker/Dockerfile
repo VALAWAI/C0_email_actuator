@@ -18,3 +18,5 @@ RUN echo "alias mvn=\"/app/mvnw -Dstyle.color=always -Dquarkus-log-max-startup-r
 RUN echo "alias mvnd=\"mvn -Dmaven.surefire.debug=\\\"-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5005 -Xnoagent -Djava.compiler=NONE\\\"\"" >> /root/.bashrc
 RUN echo "alias startServer=\"mvn clean compile quarkus:dev -DdebugHost=0.0.0.0\"" >> /root/.bashrc
 RUN echo "/app/checkUpdate.sh" >> /root/.bashrc
+
+WORKDIR /app
