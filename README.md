@@ -1,22 +1,21 @@
 # C0_email_actuator
 
-The C0 e-mail actuator component sends e-mails outside the VALAWAI infrastructure.
-Thus, this component converts the messages  received into the channel
-**valawai/c0/email_actuator/data/e_mail** to e-mails that send to a server.
-You can read more about this service and the payload of the message on
-the [aysncapi](asyncapi.yaml) or on the [component documentation](https://valawai.github.io/docs/components/C0/email_actuator).
+The E-mail actuator (C0) is designed to send e-mails outside the VALAWAI infrastructure. It converts messages 
+received from other VALAWAI components into outgoing e-mails.
 
 
 ## Summary
 
- - Type: C0
- - Name: E-mail actuator
- - Version: 1.1.1 (October 16,2024)
- - API: [1.0.0 (August 16, 2024)](https://raw.githubusercontent.com/VALAWAI/C0_email_actuator/ASYNCAPI_1.0.0/asyncapi.yml)
- - VALAWAI API: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
- - Developed By: [IIIA-CSIC](https://www.iiia.csic.es)
- - License: [GPL 3](LICENSE)
- 
+ - **Type**: [C0](https://valawai.github.io/docs/components/C0/)
+ - **Name**: E-mail actuator
+ - **Documentation**: [https://valawai.github.io/docs/components/C0/email_actuator](https://valawai.github.io/docs/components/C0/email_actuator)
+ - **Versions**: 
+    - **Stable version**: [1.2.0 (May 21, 2025)](https://github.com/VALAWAI/C0_email_actuator/tree/1.2.0)
+    - **API**: [1.0.0 (August 16, 2024)](https://raw.githubusercontent.com/VALAWAI/C0_email_actuator/ASYNCAPI_1.0.0/asyncapi.yml)
+    - **Required MOV API**: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
+ - **Developed By**: [IIIA-CSIC](https://www.iiia.csic.es)
+ - **License**: [GPL 3](LICENSE)
+ - **Technology Readiness Level (TLR**): [3](https://valawai.github.io/docs/components/C0/email_actuator/tlr)
  
 ## Generate Docker image
 
@@ -245,11 +244,11 @@ The defined variables are:
  The default value is **password**.
  - **MONGO_LOCAL_DATA** is the local directory where the MongoDB will be stored.
  The default value is **~/mongo_data/movDB**.
- - **DB_NAME** is the name of the database used by the MOV.
+ - **MOV_DB_NAME** is the name of the database used by the MOV.
  The default value is **movDB**.
- - **DB_USER_NAME** is the name of the user used by the MOV to access the database.
+ - **MOV_DB_USER_NAME** is the name of the user used by the MOV to access the database.
  The default value is **mov**.
- - **DB_USER_PASSWORD** is the password of the user used by the MOV to access the database.
+ - **MOV_DB_USER_PASSWORD** is the password of the user used by the MOV to access the database.
  The default value is **password**.
  - **MOV_TAG** is the tag of the MOV docker image to use.
  The default value is **latest**.

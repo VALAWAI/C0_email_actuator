@@ -48,6 +48,7 @@ public class MOVTestResource implements QuarkusTestResourceLifecycleManager {
 	/**
 	 * The mongo service container.
 	 */
+	@SuppressWarnings("resource")
 	static GenericContainer<?> mongoContainer = new GenericContainer<>(DockerImageName.parse(MONGO_DOCKER_NAME))
 			.withStartupAttempts(1).withEnv("MONGO_INITDB_ROOT_USERNAME", "root")
 			.withEnv("MONGO_INITDB_ROOT_PASSWORD", "password").withEnv("MONGO_INITDB_DATABASE", "movDB")
@@ -60,6 +61,7 @@ public class MOVTestResource implements QuarkusTestResourceLifecycleManager {
 	/**
 	 * The RabbitMQ service container.
 	 */
+	@SuppressWarnings("resource")
 	static GenericContainer<?> rabbitMQContainer = new GenericContainer<>(DockerImageName.parse(RABBITMQ_DOCKER_NAME))
 			.withStartupAttempts(1).withEnv("RABBITMQ_DEFAULT_USER", "mov").withEnv("RABBITMQ_DEFAULT_PASS", "password")
 			.withExposedPorts(5672).waitingFor(Wait.forListeningPort());

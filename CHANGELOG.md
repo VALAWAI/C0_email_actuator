@@ -1,6 +1,12 @@
 # C0_email_actuator
 
 
+## Version 1.2.0 (May 21, 2025)
+
+ - Improve documentation
+ - Improve deployment
+ 
+
 ## Version 1.1.1 (October 16, 2024)
 
  - Improve documentation

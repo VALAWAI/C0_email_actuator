@@ -42,7 +42,7 @@ public class LogServiceTest {
 	LogService service;
 
 	/**
-	 * The port where teh Master Of VALAWAI is listening.
+	 * The port where the Master Of VALAWAI is listening.
 	 */
 	@ConfigProperty(name = MOVTestResource.MOV_URL_CONFIG_PROPERTY_NAME, defaultValue = "http://host.docker.internal:8084")
 	String movUrl;
@@ -159,7 +159,7 @@ public class LogServiceTest {
 	 * Check the log message is stored.
 	 *
 	 * @param level    of the log message.
-	 * @param message  of teh log message.
+	 * @param message  of the log message.
 	 * @param payload  of the log message.
 	 * @param duration maximum time to wait the log is stored.
 	 */

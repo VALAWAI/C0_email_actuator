@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.valawai</groupId>
 	<artifactId>c0-email-actuator</artifactId>
-	<version>1.1.1</version>
+	<version>1.2.0</version>
 	<properties>
 		<compiler-plugin.version>3.13.0</compiler-plugin.version>
 		<maven.compiler.release>21</maven.compiler.release>
@@ -11,12 +11,13 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
 		<quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-		<quarkus.platform.version>3.15.1</quarkus.platform.version>
+		<quarkus.platform.version>3.22.3</quarkus.platform.version>
 		<skipITs>true</skipITs>
-		<surefire-plugin.version>3.2.5</surefire-plugin.version>
+		<surefire-plugin.version>3.3.1</surefire-plugin.version>
 		<jacoco.version>0.8.12</jacoco.version>
 		<resources-plugin.version>3.3.1</resources-plugin.version>
 	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -28,6 +29,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>io.quarkus</groupId>
@@ -128,19 +130,16 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${compiler-plugin.version}</version>
 				<configuration>
-					<compilerArgs>
-						<arg>-parameters</arg>
-						<arg>-proc:full</arg>
-					</compilerArgs>
+					<parameters>true</parameters>
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${surefire-plugin.version}</version>
 				<configuration>
-					<argLine>@{argLine} -XX:+EnableDynamicAgentLoading</argLine>
 					<systemPropertyVariables>
-						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+						<java.util.logging.manager>
+							org.jboss.logmanager.LogManager</java.util.logging.manager>
 						<maven.home>${maven.home}</maven.home>
 					</systemPropertyVariables>
 				</configuration>
@@ -158,10 +157,11 @@
 				</executions>
 				<configuration>
 					<systemPropertyVariables>
-						<native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+						<native.image.path>
+							${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+						<java.util.logging.manager>
+							org.jboss.logmanager.LogManager</java.util.logging.manager>
 						<maven.home>${maven.home}</maven.home>
-						<quarkus.test.arg-line>${argLine}</quarkus.test.arg-line>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
@@ -197,6 +197,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<profiles>
 		<profile>
 			<id>native</id>
@@ -208,7 +209,6 @@
 			<properties>
 				<skipITs>false</skipITs>
 				<quarkus.native.enabled>true</quarkus.native.enabled>
-				<quarkus.package.jar.enabled>false</quarkus.package.jar.enabled>
 			</properties>
 		</profile>
 	</profiles>

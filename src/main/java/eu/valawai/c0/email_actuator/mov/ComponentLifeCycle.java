@@ -8,15 +8,21 @@
 
 package eu.valawai.c0.email_actuator.mov;
 
+import static jakarta.interceptor.Interceptor.Priority.APPLICATION;
+import static jakarta.interceptor.Interceptor.Priority.PLATFORM_BEFORE;
+
+import java.time.Duration;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 import io.quarkus.logging.Log;
+import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
-import io.smallrye.config.Priorities;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.JsonObject;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -53,6 +59,12 @@ public class ComponentLifeCycle {
 	protected String version;
 
 	/**
+	 * The current version of the component.
+	 */
+	@ConfigProperty(name = "c0_email_actuator.send.timeout", defaultValue = "60")
+	protected long sendTimeout;
+
+	/**
 	 * The status of the component.
 	 */
 	@Inject
@@ -64,22 +76,21 @@ public class ComponentLifeCycle {
 	 *
 	 * @param event that contains the start status.
 	 */
-	public void handle(@Observes @Priority(Priorities.APPLICATION) StartupEvent event) {
+	public void handle(@Observes @Priority(APPLICATION + 1) StartupEvent event) {
 
-		final var payload = new RegisterComponentPayload();
-		payload.version = this.version;
-		this.register.send(payload).handle((success, error) -> {
+		try {
 
-			if (error == null) {
+			final var payload = new RegisterComponentPayload();
+			payload.version = this.version;
+			Uni.createFrom().completionStage(this.register.send(payload)).await()
+					.atMost(Duration.ofSeconds(this.sendTimeout));
+			Log.debugv("Sent register {0}.", payload);
 
-				Log.infov("Sent register {0}.", payload);
+		} catch (final Throwable error) {
 
-			} else {
-
-				Log.errorv(error, "Cannot register the component.");
-			}
-			return null;
-		});
+			Log.errorv(error, "Cannot send the component registration message.");
+			Quarkus.asyncExit(1);
+		}
 
 	}
 
@@ -89,25 +100,22 @@ public class ComponentLifeCycle {
 	 *
 	 * @param event that contains the start status.
 	 */
-	public void handle(@Observes ShutdownEvent event) {
+	public void handle(@Observes @Priority(PLATFORM_BEFORE + 1) ShutdownEvent event) {
 
 		if (this.status.isRegistered()) {
 
-			final var payload = new UnregisterComponentPayload();
-			payload.component_id = this.status.getRegisteredId();
-			this.unregister.send(payload).handle((success, error) -> {
+			try {
 
-				if (error == null) {
+				final var payload = new UnregisterComponentPayload();
+				payload.component_id = this.status.getRegisteredId();
+				Uni.createFrom().completionStage(this.unregister.send(payload)).await()
+						.atMost(Duration.ofSeconds(this.sendTimeout));
+				Log.debugv("Sent unregister {0}.", payload);
 
-					Log.infov("Sent unregister {0}.", payload);
+			} catch (final Throwable error) {
 
-				} else {
-
-					Log.errorv(error, "Cannot unregister the component.");
-				}
-				return null;
-			});
-
+				Log.errorv(error, "Cannot send the component unregister message.");
+			}
 		}
 
 	}

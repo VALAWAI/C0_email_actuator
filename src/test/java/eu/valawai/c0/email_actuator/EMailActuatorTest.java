@@ -16,8 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
@@ -28,6 +26,7 @@ import eu.valawai.c0.email_actuator.mov.MOVTestResource;
 import io.quarkus.mailer.MockMailbox;
 import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.JsonObject;
 import jakarta.inject.Inject;
 
@@ -117,24 +116,13 @@ public class EMailActuatorTest {
 	 */
 	protected <T> void assertEmit(T value, Emitter<T> emitter) {
 
-		final var semaphore = new Semaphore(0);
 		final var errors = new ArrayList<Throwable>();
-		emitter.send(value).handle((success, error) -> {
+		Uni.createFrom().completionStage(emitter.send(value)).onFailure().recoverWithItem(error -> {
 
-			if (error != null) {
-
-				errors.add(error);
-			}
-			semaphore.release();
+			errors.add(error);
 			return null;
-		});
 
-		try {
-
-			assertTrue(semaphore.tryAcquire(30, TimeUnit.SECONDS), "not emitted an event in 30 seconds");
-
-		} catch (final InterruptedException ignored) {
-		}
+		}).await().atMost(Duration.ofSeconds(30));
 
 		assertTrue(errors.isEmpty());
 

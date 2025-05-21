@@ -16,6 +16,7 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 import io.quarkus.logging.Log;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.JsonObject;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -53,31 +54,26 @@ public class MOVComponentQueryService {
 	/**
 	 * Ask to the MOV about the information of the component.
 	 *
-	 * @return the information of the component or {2code null} if cannot obtain it.
+	 * @return the information of the component or {@code null} if cannot obtain it.
 	 */
 	public JsonObject queryComponentInformation() {
 
 		final var query = new QueryComponentsPayload();
 		this.queryId = query.id;
-		final var semaphore = new Semaphore(0);
 		this.component = null;
-		this.query.send(query).handle((success, error) -> {
+		Uni.createFrom().completionStage(this.query.send(query)).subscribe().with(any -> {
 
-			if (error == null) {
+			Log.infov("Sent query {0}.", query);
+			this.semaphore.release();
+		}, error -> {
 
-				Log.infov("Sent query {0}.", query);
-
-			} else {
-
-				Log.errorv(error, "Cannot send query.");
-			}
-			semaphore.release();
-			return null;
+			Log.errorv(error, "Cannot send query.");
+			this.semaphore.release();
 		});
 
 		try {
 
-			semaphore.tryAcquire(2, 30, TimeUnit.SECONDS);
+			this.semaphore.tryAcquire(2, 30, TimeUnit.SECONDS);
 
 		} catch (final InterruptedException ignored) {
 		}

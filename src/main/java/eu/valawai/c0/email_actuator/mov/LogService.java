@@ -14,6 +14,7 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import io.quarkus.logging.Log;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.Json;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -47,18 +48,9 @@ public class LogService {
 	public void send(AddLogPayload payload) {
 
 		payload.component_id = this.status.getRegisteredId();
-		this.service.send(payload).handle((success, error) -> {
-
-			if (error == null) {
-
-				Log.debugv("Sent log {0}.", payload);
-
-			} else {
-
-				Log.errorv(error, "Cannot send log {0}.", payload);
-			}
-			return null;
-		});
+		Uni.createFrom().completionStage(this.service.send(payload)).subscribe().with(
+				any -> Log.debugv("Sent log {0}.", payload),
+				error -> Log.errorv(error, "Cannot send log {0}.", payload));
 	}
 
 	/**
