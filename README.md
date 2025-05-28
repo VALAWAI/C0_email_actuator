@@ -5,18 +5,20 @@ received from other VALAWAI components into outgoing e-mails.
 
 ## Summary
 
-- **Type**: [C0](https://valawai.github.io/docs/components/C0/)
-- **Name**: E-mail actuator
-- **Documentation**: [https://valawai.github.io/docs/components/C0/email_actuator](https://valawai.github.io/docs/components/C0/email_actuator)
-- **Versions**:
-  - **Stable version**: [1.2.0 (May 21, 2025)](https://github.com/VALAWAI/C0_email_actuator/tree/1.2.0)
+ - **Type**: [C0](https://valawai.github.io/docs/components/C0/)
+ - **Name**: E-mail actuator
+ - **Documentation**: [https://valawai.github.io/docs/components/C0/email_actuator](https://valawai.github.io/docs/components/C0/email_actuator)
+ - **Versions**:
+    - **Stable version**: [1.2.0 (May 21, 2025)](https://github.com/VALAWAI/C0_email_actuator/tree/1.2.0)
     - **API**: [1.0.0 (August 16, 2024)](https://raw.githubusercontent.com/VALAWAI/C0_email_actuator/ASYNCAPI_1.0.0/asyncapi.yml)
     - **Required MOV API**: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
-- **Developed By**: [IIIA-CSIC](https://www.iiia.csic.es)
-- **License**: [GPL 3](LICENSE)
-- **Technology Readiness Level (TLR)**: [3](https://valawai.github.io/docs/components/C0/email_actuator/tlr)
+ - **Developed By**: [IIIA-CSIC](https://www.iiia.csic.es)
+ - **License**: [GPL v3](LICENSE)
+ - **Technology Readiness Level (TLR)**: [3](https://valawai.github.io/docs/components/C0/email_actuator/tlr)
 
 ## Usage
+
+This component can be used to send e-mails outside the value-aware infrastructure.
 
 ## Deployment
 
@@ -65,11 +67,11 @@ to quickly get this component operational.
         in the same directory as your `docker-compose.yml` with content similar to this:
   
        ```properties
-       MQ_HOST=rabbitmq.valawai.eu
-       MQ_USERNAME=c0_email_actuator
-       MQ_PASSWORD=lkjagb_ro82t¿134
-       EMAIL_ACTUATOR_PORT=8080
-       MAIL_WEB=8083
+       MQ_HOST=host.docker.internal
+       MQ_USERNAME=mov
+       MQ_PASSWORD=password
+       C0_EMAIL_ACTUATOR_PORT=9080
+       MAIL_WEB=9083
        ```
   
        The specific meanings and possible values for these and other related variables
@@ -91,7 +93,7 @@ to quickly get this component operational.
     COMPOSE_PROFILES=all docker compose down
     ```
 
- This will stop the MOV, RabbitMQ and the mail catcher containers.
+    This will stop the MOV, RabbitMQ and the mail catcher containers.
 
 ## Development environment
 

@@ -113,12 +113,12 @@ services:
     depends_on:
       mov:
         condition: service_healthy
-        restart: true
+        required: false
       mail:
         condition: service_started
         required: false
     ports:
-      - ${EMAIL_ACTUATOR_PORT:-8080}:8080
+      - ${C0_EMAIL_ACTUATOR_PORT:-8080}:8080
     environment:
       RABBITMQ_HOST: ${MQ_HOST:-mq}
       RABBITMQ_PORT: ${MQ_PORT:-5672}
