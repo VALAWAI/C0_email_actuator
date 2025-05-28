@@ -144,7 +144,7 @@ like MOV, RabbitMQ, MongoDB, Mongo Express, and the Mail Catcher.
 Here's a collection of useful links related to this component and the VALAWAI ecosystem:
 
 - **C0 E-mail Actuator Documentation**: [https://valawai.github.io/docs/components/C0/email_actuator](https://valawai.github.io/docs/components/C0/email_actuator)
-- **Master Of VALAWAI (MOV)**: [http://localhost:3000/docs/architecture/implementations/mov/](http://localhost:3000/docs/architecture/implementations/mov/)
+- **Master Of VALAWAI (MOV)**: [https://valawai.github.io/docs/architecture/implementations/mov/](https://valawai.github.io/docs/architecture/implementations/mov/)
 - **VALAWAI Main Documentation**: [https://valawai.github.io/docs/](https://valawai.github.io/docs/)
 - **VALAWAI on GitHub**: [https://github.com/VALAWAI](https://github.com/VALAWAI)
 - **VALAWAI Official Website**: [https://valawai.eu/](https://valawai.eu/)
