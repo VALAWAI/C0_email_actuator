@@ -9,7 +9,7 @@ received from other VALAWAI components into outgoing e-mails.
  - **Name**: E-mail actuator
  - **Documentation**: [https://valawai.github.io/docs/components/C0/email_actuator](https://valawai.github.io/docs/components/C0/email_actuator)
  - **Versions**:
-    - **Stable version**: [1.2.0 (May 21, 2025)](https://github.com/VALAWAI/C0_email_actuator/tree/1.2.0)
+    - **Stable version**: [1.2.0 (June 2, 2025)](https://github.com/VALAWAI/C0_email_actuator/tree/1.2.0)
     - **API**: [1.0.0 (August 16, 2024)](https://raw.githubusercontent.com/VALAWAI/C0_email_actuator/ASYNCAPI_1.0.0/asyncapi.yml)
     - **Required MOV API**: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
  - **Developed By**: [IIIA-CSIC](https://www.iiia.csic.es)
