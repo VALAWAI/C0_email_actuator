@@ -15,14 +15,14 @@ services:
     networks:
       - email_actuator_net
     environment:
-      RABBITMQ_HOST: ${MQ_HOST:-mq}
-      RABBITMQ_PORT: ${MQ_PORT:-5672}
-      RABBITMQ_USERNAME: ${MQ_USER:-mov}
-      RABBITMQ_PASSWORD: ${MQ_PASSWORD:-password}
+      RABBITMQ_HOST: ${MOV_MQ_HOST:-mq}
+      RABBITMQ_PORT: ${MOV_MQ_PORT:-5672}
+      RABBITMQ_USERNAME: ${MOV_MQ_USER:-mov}
+      RABBITMQ_PASSWORD: ${MOV_MQ_PASSWORD:-password}
       QUARKUS_MONGODB_DATABASE: ${MOV_DB_NAME:-movDB}
       QUARKUS_MONGODB_CREDENTIALS_USERNAME: ${MOV_DB_USER_NAME:-mov}
       QUARKUS_MONGODB_CREDENTIALS_PASSWORD: ${MOV_DB_USER_PASSWORD:-password}
-      QUARKUS_MONGODB_HOSTS: ${DB_HOST:-mongo}:${MONGO_PORT:-27017}
+      QUARKUS_MONGODB_HOSTS: ${MOV_DB_HOST:-mongo}:${MOV_DB_PORT:-27017}
       MOV_URL: http://0.0.0.0:${MOV_UI_PORT:-8081}
     healthcheck:
       test:
@@ -41,15 +41,15 @@ services:
     container_name: mov_mq
     pull_policy: daily
     profiles: [mov, all]
-    hostname: ${MQ_HOST:-mq}
+    hostname: ${MOV_MQ_HOST:-mq}
     ports:
-      - ${MQ_PORT:-5672}:5672
-      - ${MQ_UI_PORT:-8082}:15672
+      - ${MOV_MQ_PORT:-5672}:5672
+      - ${MOV_MQ_UI_PORT:-8082}:15672
     networks:
       - email_actuator_net
     environment:
-      RABBITMQ_DEFAULT_USER: ${MQ_USER:-mov}
-      RABBITMQ_DEFAULT_PASS: ${MQ_PASSWORD:-password}
+      RABBITMQ_DEFAULT_USER: ${MOV_MQ_USER:-mov}
+      RABBITMQ_DEFAULT_PASS: ${MOV_MQ_PASSWORD:-password}
     healthcheck:
       test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
       interval: 1m
@@ -120,17 +120,17 @@ services:
     ports:
       - ${C0_EMAIL_ACTUATOR_PORT:-8080}:8080
     environment:
-      RABBITMQ_HOST: ${MQ_HOST:-mq}
-      RABBITMQ_PORT: ${MQ_PORT:-5672}
-      RABBITMQ_USERNAME: ${MQ_USER:-mov}
-      RABBITMQ_PASSWORD: ${MQ_PASSWORD:-password}
+      RABBITMQ_HOST: ${MOV_MQ_HOST:-mq}
+      RABBITMQ_PORT: ${MOV_MQ_PORT:-5672}
+      RABBITMQ_USERNAME: ${MOV_MQ_USER:-mov}
+      RABBITMQ_PASSWORD: ${MOV_MQ_PASSWORD:-password}
       QUARKUS_MAILER_HOST: ${MAIL_HOST:-mail}
       QUARKUS_MAILER_PORT: ${MAIL_PORT:-1025}
       QUARKUS_MAILER_FROM: ${MAIL_FROM:-no-reply@valawai.eu}
       QUARKUS_MAILER_USERNAME: ${MAIL_USERNAME:-user}
       QUARKUS_MAILER_PASSWORD: ${MAIL_PASSWORD:-password}
       QUARKUS_MAILER_START_TLS: ${MAIL_STARTTLS:-DISABLED}
-      QUARKUS_MAILER_TLS: ${MAIL_STARTTLS:-false}
+      QUARKUS_MAILER_TLS: ${MAIL_TLS:-false}
       QUARKUS_MAILER_AUTH_METHODS: ${MAIL_AUTH_METHODS:-DIGEST-MD5 CRAM-SHA256 CRAM-SHA1 CRAM-MD5 PLAIN LOGIN}
     healthcheck:
       test:
