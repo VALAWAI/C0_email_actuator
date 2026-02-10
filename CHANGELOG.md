@@ -1,6 +1,6 @@
 # C0_email_actuator
 
-## Version 1.3.0 (February 5, 2026)
+## Version 1.3.0 (February 10, 2026)
 
  - Fix deprecated docker image
  
